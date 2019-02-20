@@ -1,7 +1,9 @@
 const electron = require('electron');
 const url = require('url');
 const path = require('path');
-const{app, BrowserWindow, Menu} = electron; //  decomposition
+const{app, BrowserWindow, Menu, ipcMain} = electron; //  decomposition
+
+process.env.NODE_ENV = 'production';
 
 let mainWindow;
 let addWindow;
@@ -35,7 +37,10 @@ function setMainMenu() {
                 }
             },
             {
-                label: 'Clear Items'
+                label: 'Clear Items',
+                click() {
+                    mainWindow.webContents.send('item:clear');
+                }
             },
             {
                 label: 'Quit',
@@ -54,6 +59,13 @@ function setMainMenu() {
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
 }
+
+//  Catch it here from addWindow and send it to mainWindow
+ipcMain.on('item:add', (event, item) => {
+    console.log(item);
+    mainWindow.webContents.send('item:add', item);
+    addWindow.close();
+});
 
 function createAddWindow() {
     addWindow = new BrowserWindow({width:300, height:200, title:'Add Shopping List Item'});

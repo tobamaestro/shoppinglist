@@ -3,8 +3,45 @@
 <head>
     <meta charset="utf-8" />
     <title>ShoppingList</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 <body>
-    <h1>ShoppingList</h1>
+    <nav>
+        <div class="nav-wrapper">
+            <a  class="brand-logo center">ShoppingList</a>
+        </div>
+    </nav>
+    <ul></ul>
 </body>
+<script>
+    const electron = require('electron');
+    const {ipcRenderer} = electron;
+    const ul = document.querySelector('ul');
+
+    //  Handle Add Item menu action
+    ipcRenderer.on('item:add', (event, item) => {
+        ul.className = 'collection';
+        const li = document.createElement('li');
+        li.className = 'collection-item';
+        const text = document.createTextNode(item);
+        li.appendChild(text);
+        ul.appendChild(li);
+    });
+
+    //  Handle Clear Items menu action
+    ipcRenderer.on('item:clear', ( ) => {
+        ul.innerHTML = '';
+        ul.className = '';
+    });
+
+    //  Handle remove single item with double-click on list item
+    ul.addEventListener('dblclick', removeItem);
+    function removeItem(event) {
+        event.target.remove();  //  event.target -> list item
+        if (ul.childElementCount == 0) {
+            ul.className = '';
+        }
+    }
+
+</script>
 </html>
