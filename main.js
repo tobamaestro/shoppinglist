@@ -3,6 +3,7 @@ const url = require('url');
 const path = require('path');
 const{app, BrowserWindow, Menu, ipcMain} = electron; //  decomposition
 
+//  Hide DevTools for packaging
 process.env.NODE_ENV = 'production';
 
 let mainWindow;
